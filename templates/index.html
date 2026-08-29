@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FTP Downloader</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="topbar">
+      <div>
+        <h1>FTP Downloader</h1>
+        <p>Private-network recursive FTP or HTTP downloads with per-file progress.</p>
+      </div>
+      <div class="status-pill" id="connectionStatus">Not connected</div>
+    </section>
+
+    <section class="layout">
+      <form class="panel controls" id="downloadForm">
+        <div class="panel-header">
+          <h2>Connection</h2>
+          <button class="icon-button" id="browseRootButton" type="button" title="Browse source">↻</button>
+        </div>
+
+        <div class="grid two">
+          <label>
+            Source type
+            <select id="protocol">
+              <option value="ftp">FTP</option>
+              <option value="http" selected>HTTP</option>
+              <option value="https">HTTPS</option>
+            </select>
+          </label>
+          <label>
+            Port
+            <input id="port" type="number" min="1" max="65535" value="21">
+          </label>
+          <label>
+            Username
+            <input id="username" autocomplete="username" value="anonymous">
+          </label>
+          <label>
+            Password
+            <input id="password" type="password" autocomplete="current-password">
+          </label>
+        </div>
+
+        <div class="toggles">
+          <label class="check-row"><input id="passive" type="checkbox" checked> Passive mode</label>
+          <label class="check-row"><input id="tls" type="checkbox"> FTPS/TLS</label>
+          <label class="check-row"><input id="skipExisting" type="checkbox" checked> Skip completed files</label>
+        </div>
+
+        <h2>Download</h2>
+        <div class="grid two">
+          <label>
+            URL
+            <div class="inline">
+              <input id="remotePath" placeholder="http://172.16.50.4/path/" required>
+              <button id="browseButton" type="button">Browse</button>
+            </div>
+          </label>
+          <label>
+            Save folder on this server
+            <input id="savePath" placeholder="Movies or /Media/Movies">
+          </label>
+          <label>
+            Files per folder
+            <input id="fileLimit" type="number" min="0" value="0">
+          </label>
+          <label>
+            Parallel downloads
+            <input id="concurrency" type="number" min="1" max="8" value="4">
+          </label>
+        </div>
+
+        <div class="type-area">
+          <div class="type-header">
+            <h2>File Types</h2>
+            <select id="typePreset" aria-label="File type preset">
+              <option value="media" selected>All media</option>
+              <option value="image">Images</option>
+              <option value="video">Videos</option>
+              <option value="audio">Audio</option>
+              <option value="document">Documents</option>
+              <option value="archive">Archives</option>
+              <option value="all">Everything</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <textarea id="extensions" rows="3" spellcheck="false"></textarea>
+        </div>
+
+        <div class="actions">
+          <button id="startButton" class="primary" type="submit">Start download</button>
+          <button id="cancelButton" type="button" disabled>Cancel job</button>
+        </div>
+      </form>
+
+      <section class="panel browser">
+        <div class="panel-header">
+          <div>
+            <h2>Source Browser</h2>
+            <p id="browserPath">/</p>
+          </div>
+          <button id="upButton" class="icon-button" type="button" title="Parent folder">↑</button>
+        </div>
+        <div class="file-list" id="browserList">
+          <div class="empty">Enter FTP details, then browse.</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="panel progress-panel">
+      <div class="progress-head">
+        <div>
+          <h2>Progress</h2>
+          <p id="jobMessage">No active job.</p>
+        </div>
+        <div class="job-stats" id="jobStats"></div>
+      </div>
+      <div class="overall">
+        <div id="overallBar"></div>
+      </div>
+      <div class="downloads" id="downloads">
+        <div class="empty">Downloads will appear here.</div>
+      </div>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="progress-head">
+        <div>
+          <h2>Download History</h2>
+          <p id="historySummary">Loading saved downloads...</p>
+        </div>
+        <div class="history-tools">
+          <input id="historySearch" placeholder="Search files">
+          <select id="historyStatus" aria-label="Filter status">
+            <option value="">All status</option>
+            <option value="queued">Queued</option>
+            <option value="downloading">Downloading</option>
+            <option value="done">Done</option>
+            <option value="skipped">Skipped</option>
+            <option value="error">Error</option>
+          </select>
+          <button id="historyRefresh" type="button">Refresh</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Status</th>
+              <th>Progress</th>
+              <th>Size</th>
+              <th>Updated</th>
+              <th>Local path</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button id="historyPrev" type="button">Previous</button>
+        <span id="historyPage">Page 1</span>
+        <button id="historyNext" type="button">Next</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

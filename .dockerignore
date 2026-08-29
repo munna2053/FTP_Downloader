@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+downloads/
+downloads_*/
+database/
+server.log
+server.err
+*.part-*
