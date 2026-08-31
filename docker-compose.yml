@@ -13,3 +13,7 @@ services:
     volumes:
       - /srv/Media:/app/downloads
       - ./database:/data
+    deploy:
+      resources:
+        limits:
+          memory: 256M
