@@ -11,5 +11,5 @@ services:
       FTP_DOWNLOADER_PORT: "8080"
       FTP_DOWNLOADER_DB: "/data/downloader.sqlite"
     volumes:
-      - /mnt/store/Media:/app/downloads
+      - /srv/Media:/app/downloads
       - ./database:/data
